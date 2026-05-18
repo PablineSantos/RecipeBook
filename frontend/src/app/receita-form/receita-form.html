@@ -1,0 +1,4 @@
+<form #formRecipe="ngForm" (ngSubmit)="salvar()">
+  <input type="text" pInputText name="nome" [(ngModel)]="receita.nome" required minlength="3">
+  <button type="submit" [disabled]="formRecipe.invalid || salvando">Salvar</button>
+</form>

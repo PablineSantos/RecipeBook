@@ -1,8 +1,6 @@
 package com.recipebook.backend.controller;
 
 
-import com.recipebook.backend.dto.CreateRecipeRequest;
-import com.recipebook.backend.dto.RecipeResponse;
 import com.recipebook.backend.service.RecipeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,10 +17,11 @@ public class RecipeController {
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
-    @PostMapping
-    public ResponseEntity<RecipeResponse> criarReceita(@Valid @RequestBody CreateRecipeRequest createRecipeRequest){
-        RecipeResponse recipeResponse= recipeService.CriarReceita(createRecipeRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(recipeResponse);
+
+    @GetMapping
+    public ResponseEntity<List<com.senai.pabline.recipebookbackend.dto.ListRecipe>> listarReceitas(@RequestParam(required = false) String nome){
+        List<com.senai.pabline.recipebookbackend.dto.ListRecipe> recipes= recipeService.listarReceitas(nome);
+        return ResponseEntity.status(HttpStatus.OK).body(recipes);
     }
 
 }

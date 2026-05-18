@@ -1,7 +1,5 @@
 package com.recipebook.backend.service;
 
-import com.recipebook.backend.dto.CreateRecipeRequest;
-import com.recipebook.backend.dto.RecipeResponse;
 import com.recipebook.backend.entity.Recipe;
 import com.recipebook.backend.repository.RecipeRepository;
 import org.springframework.http.HttpStatus;
@@ -20,25 +18,19 @@ public class RecipeService {
     }
 
 
-    public RecipeResponse CriarReceita(CreateRecipeRequest request) {
-        Recipe recipe = new Recipe();
-        boolean exiteNome = repository.existsByNomeIgnoreCase(request.getNome());
-
-        if (exiteNome == true) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nome já existe");
+    public List<com.senai.pabline.recipebookbackend.dto.ListRecipe> listarReceitas(String nome) {
+        List<Recipe> recipes;
+        if (nome != null && !nome.isBlank()) {
+            recipes = repository.findByNomeContainingIgnoreCaseOrderByDataCadastroDesc(nome);
+        } else {
+            recipes = repository.findAllByOrderByDataCadastroDesc();
+            ;
         }
-
-        recipe.setNome(request.getNome());
-        recipe.setPorcoes(request.getPorcoes());
-        recipe.setCategoria(request.getCategoria());
-        recipe.setIngredientes(request.getIngredientes());
-        recipe.setDataCadastro(LocalDateTime.now());
-        recipe.setModoPreparo(request.getModoPreparo());
-        recipe.setTempoPreparo(request.getTempoPreparo());
-
-        repository.save(recipe);
-        return new RecipeResponse(recipe.getId(), recipe.getCategoria(),recipe.getDataCadastro(),recipe.getModoPreparo(),recipe.getIngredientes(),recipe.getPorcoes(),recipe.getTempoPreparo(),recipe.getNome());
-
+        return recipes.stream().map(recipe -> new com.senai.pabline.recipebookbackend.dto.ListRecipe(recipe.getId(), recipe.getNome(), recipe.getTempoPreparo(), recipe.getPorcoes(), recipe.getCategoria())).toList();
     }
+
+
+
+
 
 }
